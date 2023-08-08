@@ -6,6 +6,11 @@ from ttkbootstrap.constants import *
 class report():
     def __init__(self):
         self.add_num = 1
+        self.rp = Window()
+        # 设置程序标题
+        self.rp.title('report')
+        # 设置主程序窗口大小
+        self.rp.geometry('900x700')
         self.main()
 
     def del_line(self, frame):
@@ -35,17 +40,11 @@ class report():
 
 
     def main(self):
-        self.rp = Window()
-        # 设置程序标题
-        self.rp.title('report')
-        # 设置主程序窗口大小
-        self.rp.geometry('900x700')
-
         # 本周任务
         self.frame1 = Frame(self.rp)
         self.frame1.pack()
-        label1 = Label(self.frame1, text="todo", bootstyle=SUCCESS, font=('', 30)).pack()
-
+        label1 = Label(self.frame1, text="todo", bootstyle=SUCCESS, font=('', 30))
+        label1.pack()
         # 添加一个frame
         self.frame2 = Frame(self.frame1)
         self.frame2.pack()
