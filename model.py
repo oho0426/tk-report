@@ -1,3 +1,60 @@
 import sqlite3
 
-conn = sqlite3.connect()
+
+class Sqlite3Database(object):
+    """SQLite 数据库操作类"""
+
+    def __init__(self, db_name):
+        """初始化，连接到指定的数据库"""
+        self.conn = sqlite3.connect(db_name)
+        self.cursor = self.conn.cursor()
+
+    def create_table(self, table_name, columns: str):
+        """创建表格"""
+        sql = f"CREATE TABLE IF NOT EXISTS {table_name} ({columns})"
+        self.cursor.execute(sql)
+        self.conn.commit()
+
+    def drop_table(self, table_name):
+        """删除表格"""
+        sql = f"DROP TABLE IF EXISTS {table_name}"
+        self.cursor.execute(sql)
+        self.conn.commit()
+
+    def insert_data(self, table_name, data: dict):
+        """插入数据"""
+        columns = ', '.join(data.keys())
+        placeholders = ':' + ', :'.join(data.keys())
+        sql = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
+        self.cursor.execute(sql, data)
+        self.conn.commit()
+
+    def update_data(self, table_name, data: dict, condition):
+        """更新数据"""
+        set_clause = ', '.join(f"{key} = :{key}" for key in data.keys())
+        sql = f"UPDATE {table_name} SET {set_clause} WHERE {condition}"
+        self.cursor.execute(sql, data)
+        self.conn.commit()
+
+    def delete_data(self, table_name, condition):
+        """删除数据"""
+        sql = f"DELETE FROM {table_name} WHERE {condition}"
+        self.cursor.execute(sql)
+        self.conn.commit()
+
+    def select_data(self, table_name, columns=None, condition=None):
+        """查询数据"""
+        if columns is None:
+            columns = '*'
+        if condition is None:
+            condition = ''
+        else:
+            condition = f"WHERE {condition}"
+        sql = f"SELECT {columns} FROM {table_name} {condition}"
+        self.cursor.execute(sql)
+        return self.cursor.fetchall()
+
+    def __del__(self):
+        """关闭数据库连接"""
+        self.conn.close()
+
